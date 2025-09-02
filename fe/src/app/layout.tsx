@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import '@xyflow/react/dist/style.css'
+import Providers from './providers'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body>
-        <main className='min-h-screen w-screen'>{children}</main>
+        <Providers>
+          <main className='min-h-screen w-screen'>{children}</main>
+        </Providers>
       </body>
     </html>
   )
