@@ -57,6 +57,21 @@ export interface TwitterConfig {
   bearerToken?: string
 }
 
+export interface YouTubeConfig {
+  action: 'search_videos' | 'get_channel_videos'
+  query?: string
+  channelId?: string
+  maxResults?: number
+  accessToken?: string
+}
+
+export interface LinkedInConfig {
+  action: 'create_post' | 'get_profile_posts'
+  authorUrn?: string
+  text?: string
+  accessToken?: string
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
@@ -649,6 +664,66 @@ export async function getTwitterData(
   }
 }
 
+// YouTube API functions
+export async function executeYouTubeAction(
+  config: YouTubeConfig
+): Promise<ApiResponse> {
+  try {
+    if (!config.accessToken) {
+      throw new Error('Access token is required')
+    }
+
+    const response = await fetch('/api/youtube', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'YouTube API request failed')
+    }
+
+    const result = await response.json()
+    return result
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error occurred'
+    }
+  }
+}
+
+// LinkedIn API functions
+export async function executeLinkedInAction(
+  config: LinkedInConfig
+): Promise<ApiResponse> {
+  try {
+    if (!config.accessToken) {
+      throw new Error('Access token is required')
+    }
+
+    const response = await fetch('/api/linkedin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'LinkedIn API request failed')
+    }
+
+    const result = await response.json()
+    return result
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error occurred'
+    }
+  }
+}
+
 // Helper function to validate Discord bot tokens (basic validation)
 export function validateDiscordToken(token: string): boolean {
   // Discord bot tokens typically start with specific patterns
@@ -659,4 +734,14 @@ export function validateDiscordToken(token: string): boolean {
 export function validateTwitterToken(token: string): boolean {
   // Twitter bearer tokens are typically long and contain specific characters
   return token.length > 50 && token.includes('AAAA')
+}
+
+// Helper validation for YouTube (Google access token)
+export function validateYouTubeAccessToken(token: string): boolean {
+  return validateAccessToken(token)
+}
+
+// Helper validation for LinkedIn access tokens (very basic)
+export function validateLinkedInToken(token: string): boolean {
+  return token.length > 20
 }

@@ -20,6 +20,8 @@ import GmailNode from './nodes/GmailNode'
 import GoogleDriveNode from './nodes/GoogleDriveNode'
 import DiscordNode from './nodes/DiscordNode'
 import TwitterNode from './nodes/TwitterNode'
+import YouTubeNode from './nodes/YouTubeNode'
+import LinkedInNode from './nodes/LinkedInNode'
 import { Button } from '@/components/ui/button'
 import { Plus, Play, Square } from 'lucide-react'
 
@@ -28,7 +30,9 @@ const nodeTypes: NodeTypes = {
   gmail: GmailNode as unknown as ComponentType<NodeProps>,
   googleDrive: GoogleDriveNode as unknown as ComponentType<NodeProps>,
   discord: DiscordNode as unknown as ComponentType<NodeProps>,
-  twitter: TwitterNode as unknown as ComponentType<NodeProps>
+  twitter: TwitterNode as unknown as ComponentType<NodeProps>,
+  youtube: YouTubeNode as unknown as ComponentType<NodeProps>,
+  linkedin: LinkedInNode as unknown as ComponentType<NodeProps>
 }
 
 const initialNodes: Node[] = [
@@ -106,6 +110,26 @@ export default function FlowCanvas() {
     setNodes((nds) => [...nds, newNode])
   }, [setNodes])
 
+  const addYouTubeNode = useCallback(() => {
+    const newNode: Node = {
+      id: `youtube-${Date.now()}`,
+      type: 'youtube',
+      position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 100 },
+      data: { title: 'YouTube', subtitle: 'Search Videos' }
+    }
+    setNodes((nds) => [...nds, newNode])
+  }, [setNodes])
+
+  const addLinkedInNode = useCallback(() => {
+    const newNode: Node = {
+      id: `linkedin-${Date.now()}`,
+      type: 'linkedin',
+      position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 100 },
+      data: { title: 'LinkedIn', subtitle: 'Create Post' }
+    }
+    setNodes((nds) => [...nds, newNode])
+  }, [setNodes])
+
   const executeWorkflow = useCallback(async () => {
     setIsExecuting(true)
     // Simulate workflow execution
@@ -152,6 +176,24 @@ export default function FlowCanvas() {
         >
           <Plus className='h-4 w-4 mr-2' />
           Twitter
+        </Button>
+        <Button
+          onClick={addYouTubeNode}
+          size='sm'
+          variant='outline'
+          className='bg-background/80 backdrop-blur-sm'
+        >
+          <Plus className='h-4 w-4 mr-2' />
+          YouTube
+        </Button>
+        <Button
+          onClick={addLinkedInNode}
+          size='sm'
+          variant='outline'
+          className='bg-background/80 backdrop-blur-sm'
+        >
+          <Plus className='h-4 w-4 mr-2' />
+          LinkedIn
         </Button>
         <Button
           onClick={executeWorkflow}
