@@ -72,6 +72,15 @@ export interface LinkedInConfig {
   accessToken?: string
 }
 
+export interface AIConfig {
+  provider: 'openai' | 'anthropic' | 'google' | 'groq'
+  model: string
+  prompt: string
+  apiKey: string
+  maxTokens?: number
+  temperature?: number
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
@@ -744,4 +753,54 @@ export function validateYouTubeAccessToken(token: string): boolean {
 // Helper validation for LinkedIn access tokens (very basic)
 export function validateLinkedInToken(token: string): boolean {
   return token.length > 20
+}
+
+// AI API functions
+export async function executeAIAction(config: AIConfig): Promise<ApiResponse> {
+  try {
+    if (!config.apiKey) {
+      throw new Error('API key is required')
+    }
+
+    if (!config.prompt) {
+      throw new Error('Prompt is required')
+    }
+
+    const response = await fetch('/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'AI API request failed')
+    }
+
+    const result = await response.json()
+    return result
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error occurred'
+    }
+  }
+}
+
+// Helper validation for AI API keys (basic)
+export function validateAIToken(token: string, provider: string): boolean {
+  if (!token || token.length < 10) return false
+
+  switch (provider) {
+    case 'openai':
+      return token.startsWith('sk-')
+    case 'anthropic':
+      return token.startsWith('sk-ant-')
+    case 'google':
+      return token.length > 20 // Google API keys are long
+    case 'groq':
+      return token.startsWith('gsk_')
+    default:
+      return token.length > 10
+  }
 }

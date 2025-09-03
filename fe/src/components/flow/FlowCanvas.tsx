@@ -22,6 +22,8 @@ import DiscordNode from './nodes/DiscordNode'
 import TwitterNode from './nodes/TwitterNode'
 import YouTubeNode from './nodes/YouTubeNode'
 import LinkedInNode from './nodes/LinkedInNode'
+import WebhookTriggerNode from './nodes/WebhookTriggerNode'
+import AINode from './nodes/AINode'
 import { Button } from '@/components/ui/button'
 import { Plus, Play, Square } from 'lucide-react'
 
@@ -32,7 +34,9 @@ const nodeTypes: NodeTypes = {
   discord: DiscordNode as unknown as ComponentType<NodeProps>,
   twitter: TwitterNode as unknown as ComponentType<NodeProps>,
   youtube: YouTubeNode as unknown as ComponentType<NodeProps>,
-  linkedin: LinkedInNode as unknown as ComponentType<NodeProps>
+  linkedin: LinkedInNode as unknown as ComponentType<NodeProps>,
+  webhookTrigger: WebhookTriggerNode as unknown as ComponentType<NodeProps>,
+  ai: AINode as unknown as ComponentType<NodeProps>
 }
 
 const initialNodes: Node[] = [
@@ -130,6 +134,26 @@ export default function FlowCanvas() {
     setNodes((nds) => [...nds, newNode])
   }, [setNodes])
 
+  const addWebhookTriggerNode = useCallback(() => {
+    const newNode: Node = {
+      id: `webhook-${Date.now()}`,
+      type: 'webhookTrigger',
+      position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 100 },
+      data: { title: 'Webhook Trigger', subtitle: 'Start Workflow' }
+    }
+    setNodes((nds) => [...nds, newNode])
+  }, [setNodes])
+
+  const addAINode = useCallback(() => {
+    const newNode: Node = {
+      id: `ai-${Date.now()}`,
+      type: 'ai',
+      position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 100 },
+      data: { title: 'AI Assistant', subtitle: 'Generate Content' }
+    }
+    setNodes((nds) => [...nds, newNode])
+  }, [setNodes])
+
   const executeWorkflow = useCallback(async () => {
     setIsExecuting(true)
     // Simulate workflow execution
@@ -194,6 +218,24 @@ export default function FlowCanvas() {
         >
           <Plus className='h-4 w-4 mr-2' />
           LinkedIn
+        </Button>
+        <Button
+          onClick={addWebhookTriggerNode}
+          size='sm'
+          variant='outline'
+          className='bg-background/80 backdrop-blur-sm'
+        >
+          <Plus className='h-4 w-4 mr-2' />
+          Webhook
+        </Button>
+        <Button
+          onClick={addAINode}
+          size='sm'
+          variant='outline'
+          className='bg-background/80 backdrop-blur-sm'
+        >
+          <Plus className='h-4 w-4 mr-2' />
+          AI
         </Button>
         <Button
           onClick={executeWorkflow}
