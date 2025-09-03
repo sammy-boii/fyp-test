@@ -10,8 +10,9 @@ const HomePage = () => {
             Workflow Automation
           </h1>
           <p className='text-muted-foreground mt-2'>
-            Create automated workflows with Gmail and Google Drive integration.
-            Drag, connect, and execute your automation tasks.
+            Create automated workflows with Gmail, Google Drive, Discord, and
+            Twitter integration. Drag, connect, and execute your automation
+            tasks across multiple platforms.
           </p>
         </div>
         <div className='text-right'>

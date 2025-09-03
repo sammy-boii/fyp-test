@@ -18,13 +18,17 @@ import {
 import IconTitleNode from './nodes/IconTitleNode'
 import GmailNode from './nodes/GmailNode'
 import GoogleDriveNode from './nodes/GoogleDriveNode'
+import DiscordNode from './nodes/DiscordNode'
+import TwitterNode from './nodes/TwitterNode'
 import { Button } from '@/components/ui/button'
 import { Plus, Play, Square } from 'lucide-react'
 
 const nodeTypes: NodeTypes = {
   iconTitle: IconTitleNode as unknown as ComponentType<NodeProps>,
   gmail: GmailNode as unknown as ComponentType<NodeProps>,
-  googleDrive: GoogleDriveNode as unknown as ComponentType<NodeProps>
+  googleDrive: GoogleDriveNode as unknown as ComponentType<NodeProps>,
+  discord: DiscordNode as unknown as ComponentType<NodeProps>,
+  twitter: TwitterNode as unknown as ComponentType<NodeProps>
 }
 
 const initialNodes: Node[] = [
@@ -82,6 +86,26 @@ export default function FlowCanvas() {
     setNodes((nds) => [...nds, newNode])
   }, [setNodes])
 
+  const addDiscordNode = useCallback(() => {
+    const newNode: Node = {
+      id: `discord-${Date.now()}`,
+      type: 'discord',
+      position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 100 },
+      data: { title: 'Discord', subtitle: 'Send Message' }
+    }
+    setNodes((nds) => [...nds, newNode])
+  }, [setNodes])
+
+  const addTwitterNode = useCallback(() => {
+    const newNode: Node = {
+      id: `twitter-${Date.now()}`,
+      type: 'twitter',
+      position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 100 },
+      data: { title: 'Twitter', subtitle: 'Get Timeline' }
+    }
+    setNodes((nds) => [...nds, newNode])
+  }, [setNodes])
+
   const executeWorkflow = useCallback(async () => {
     setIsExecuting(true)
     // Simulate workflow execution
@@ -110,6 +134,24 @@ export default function FlowCanvas() {
         >
           <Plus className='h-4 w-4 mr-2' />
           Drive
+        </Button>
+        <Button
+          onClick={addDiscordNode}
+          size='sm'
+          variant='outline'
+          className='bg-background/80 backdrop-blur-sm'
+        >
+          <Plus className='h-4 w-4 mr-2' />
+          Discord
+        </Button>
+        <Button
+          onClick={addTwitterNode}
+          size='sm'
+          variant='outline'
+          className='bg-background/80 backdrop-blur-sm'
+        >
+          <Plus className='h-4 w-4 mr-2' />
+          Twitter
         </Button>
         <Button
           onClick={executeWorkflow}

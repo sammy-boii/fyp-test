@@ -40,7 +40,24 @@ export interface GoogleDriveConfig {
   accessToken: string
 }
 
-export interface ApiResponse<T = any> {
+export interface DiscordConfig {
+  action: 'send_message' | 'send_embed' | 'get_channel_messages'
+  channelId?: string
+  message?: string
+  embedTitle?: string
+  embedDescription?: string
+  embedColor?: string
+  botToken?: string
+}
+
+export interface TwitterConfig {
+  action: 'get_timeline' | 'get_trending' | 'get_user_tweets'
+  username?: string
+  count?: number
+  bearerToken?: string
+}
+
+export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
   error?: string
@@ -560,4 +577,86 @@ export function getGoogleOAuthUrl(): string {
     'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/drive.file'
 
   return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code&access_type=offline`
+}
+
+// Discord API functions
+export async function sendDiscordMessage(
+  config: DiscordConfig
+): Promise<ApiResponse> {
+  try {
+    if (!config.botToken) {
+      throw new Error('Bot token is required')
+    }
+
+    if (!config.channelId) {
+      throw new Error('Channel ID is required')
+    }
+
+    // Use our Next.js API route to avoid CORS and get better error handling
+    const response = await fetch('/api/discord', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(config)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Discord API request failed')
+    }
+
+    const result = await response.json()
+    return result
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error occurred'
+    }
+  }
+}
+
+// Twitter API functions
+export async function getTwitterData(
+  config: TwitterConfig
+): Promise<ApiResponse> {
+  try {
+    if (!config.bearerToken) {
+      throw new Error('Bearer token is required')
+    }
+
+    // Use our Next.js API route to avoid CORS issues
+    const response = await fetch('/api/twitter', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(config)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Twitter API request failed')
+    }
+
+    const result = await response.json()
+    return result
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error occurred'
+    }
+  }
+}
+
+// Helper function to validate Discord bot tokens (basic validation)
+export function validateDiscordToken(token: string): boolean {
+  // Discord bot tokens typically start with specific patterns
+  return token.length > 50 && token.includes('.')
+}
+
+// Helper function to validate Twitter bearer tokens (basic validation)
+export function validateTwitterToken(token: string): boolean {
+  // Twitter bearer tokens are typically long and contain specific characters
+  return token.length > 50 && token.includes('AAAA')
 }

@@ -157,6 +157,22 @@ export default function DemoInstructions() {
               </div>
               <div className='flex items-center gap-2 text-sm'>
                 <Badge variant='secondary' className='text-xs'>
+                  Discord
+                </Badge>
+                <span className='text-muted-foreground'>
+                  Send messages, embeds, and read channel messages
+                </span>
+              </div>
+              <div className='flex items-center gap-2 text-sm'>
+                <Badge variant='secondary' className='text-xs'>
+                  Twitter
+                </Badge>
+                <span className='text-muted-foreground'>
+                  Get timeline, trending topics, and user tweets
+                </span>
+              </div>
+              <div className='flex items-center gap-2 text-sm'>
+                <Badge variant='secondary' className='text-xs'>
                   Visual
                 </Badge>
                 <span className='text-muted-foreground'>
